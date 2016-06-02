@@ -25,43 +25,36 @@
 *             Buddha bless me, No bug forever              *
 ************************************************************
 *    >  CopyRight   :                                      *
-*    >  File Name   : StandardDialog.hh
+*    >  File Name   : MessageDialog.hh
 *    >  Author      : zhuhaiwen                            *
 *    >  mail        : zhwren0211@whu.edu.cn                *
-*    >  Created Time: 2016-06-02 17:11                     *
+*    >  Created Time: 2016-06-02 22:31                     *
 *    >  PhoneNumber : 18625272373                          *
 ***********************************************************/
-#ifndef StandardDialog_h
-#define StandardDialog_h 1
+#ifndef MessageDialog_h
+#define MessageDialog_h 1
 
 #include <QDialog>
 class QPushButton;
-class QLineEdit;
-class QFrame;
-class MessageDialog;
-class StandardDialog : public QDialog
+class MessageDialog : public QDialog
 {
   Q_OBJECT
   public:
-    StandardDialog(QWidget* parent=0);
-    ~StandardDialog();
-
+    MessageDialog(QWidget* parent=0);
+    ~MessageDialog();
   private:
-    QPushButton* fileButton;
-    QLineEdit* fileLineEdit;
-    QPushButton* colorButton;
-    QFrame* colorFrame;
-    QPushButton* fontButton;
-    QLineEdit* fontLineEdit;
-    QPushButton* inputButton;
+    QPushButton* questionButton;
     QPushButton* messageButton;
+    QPushButton* warningButton;
+    QPushButton* aboutQtButton;
     QPushButton* aboutButton;
-    MessageDialog* messageDialog;
+    QPushButton* criticalButton;
   private slots:
-    void showFileName();
-    void showColor();
-    void showFont();
-    void showInput();
+    void showQuestion();
     void showMessage();
+    void showWarning();
+    void showAbout();
+    void showAboutQt();
+    void showCritical();
 };
 #endif
