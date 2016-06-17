@@ -1,4 +1,6 @@
 /***********************************************************
+*                                                          *
+*                                                          *
 *                         _ooOoo_                          *
 *                        o8888888o                         *
 *                        88" . "88                         *
@@ -18,6 +20,7 @@
 *      ======`-.____`-.___\_____/___.-`____.-'======       *
 *                         `=---='                          *
 *                                                          *
+*                                                          *
 *      .............................................       *
 *             Buddha bless me, No bug forever              *
 ************************************************************
@@ -25,17 +28,17 @@
 *    >  File Name   : main.cc
 *    >  Author      : zhuhaiwen                            *
 *    >  mail        : zhwren0211@whu.edu.cn                *
-*    >  Created Time: 2016-05-19 16:58                     *
+*    >  Created Time: 2016-06-15 14:18                     *
 *    >  PhoneNumber : 18625272373                          *
 ***********************************************************/
-#include "BasicInfo.hh"
+#include "digiclock.hh"
+
 #include <QApplication>
 
 int main(int argc, char* argv[])
 {
   QApplication app(argc, argv);
-  BasicInfo* basic = new BasicInfo();
-  basic->show();
-
+  DigiClock clock;
+  clock.show();
   return app.exec();
 }

@@ -1,4 +1,6 @@
 /***********************************************************
+*                                                          *
+*                                                          *
 *                         _ooOoo_                          *
 *                        o8888888o                         *
 *                        88" . "88                         *
@@ -18,24 +20,39 @@
 *      ======`-.____`-.___\_____/___.-`____.-'======       *
 *                         `=---='                          *
 *                                                          *
+*                                                          *
 *      .............................................       *
 *             Buddha bless me, No bug forever              *
 ************************************************************
 *    >  CopyRight   :                                      *
-*    >  File Name   : main.cc
+*    >  File Name   : digiclock.hh
 *    >  Author      : zhuhaiwen                            *
 *    >  mail        : zhwren0211@whu.edu.cn                *
-*    >  Created Time: 2016-05-19 16:58                     *
+*    >  Created Time: 2016-06-15 14:05                     *
 *    >  PhoneNumber : 18625272373                          *
 ***********************************************************/
-#include "BasicInfo.hh"
-#include <QApplication>
+#ifndef digiclock_h
+#define digiclock_h 1
 
-int main(int argc, char* argv[])
+#include <QLCDNumber>
+class QPoint;
+class QMouseEvent;
+
+class DigiClock : public QLCDNumber
 {
-  QApplication app(argc, argv);
-  BasicInfo* basic = new BasicInfo();
-  basic->show();
+  Q_OBJECT
+  public:
+    DigiClock(QWidget* parent=0);
+    ~DigiClock();
 
-  return app.exec();
-}
+    void mousePressEvent(QMouseEvent*);
+    void mouseMoveEvent(QMouseEvent*);
+
+  public slots:
+    void showTime();
+
+  private:
+    QPoint dragPosition;
+    bool showColon;
+};
+#endif

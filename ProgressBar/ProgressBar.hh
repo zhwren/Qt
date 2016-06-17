@@ -1,4 +1,6 @@
 /***********************************************************
+*                                                          *
+*                                                          *
 *                         _ooOoo_                          *
 *                        o8888888o                         *
 *                        88" . "88                         *
@@ -18,24 +20,40 @@
 *      ======`-.____`-.___\_____/___.-`____.-'======       *
 *                         `=---='                          *
 *                                                          *
+*                                                          *
 *      .............................................       *
 *             Buddha bless me, No bug forever              *
 ************************************************************
 *    >  CopyRight   :                                      *
-*    >  File Name   : main.cc
+*    >  File Name   : ProgressBar.hh
 *    >  Author      : zhuhaiwen                            *
 *    >  mail        : zhwren0211@whu.edu.cn                *
-*    >  Created Time: 2016-05-19 16:58                     *
+*    >  Created Time: 2016-06-03 14:23                     *
 *    >  PhoneNumber : 18625272373                          *
 ***********************************************************/
-#include "BasicInfo.hh"
-#include <QApplication>
+#ifndef ProgressBar_h
+#define ProgressBar_h 1
 
-int main(int argc, char* argv[])
+#include <QDialog>
+class QLabel;
+class QLineEdit;
+class QComboBox;
+class QPushButton;
+class QProgressBar;
+class ProgressBar : public QDialog
 {
-  QApplication app(argc, argv);
-  BasicInfo* basic = new BasicInfo();
-  basic->show();
-
-  return app.exec();
-}
+  Q_OBJECT
+  public:
+    ProgressBar(QWidget* parent=0);
+    ~ProgressBar();
+  private:
+    QLabel* label1;
+    QLabel* label2;
+    QLineEdit* lineEdit;
+    QComboBox* comboBox;
+    QPushButton* button;
+    QProgressBar* bar;
+  private slots:
+    void startProgressBar();
+};
+#endif
