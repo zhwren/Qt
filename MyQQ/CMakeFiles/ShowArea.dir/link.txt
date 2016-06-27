@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/ShowArea.dir/main.cc.o CMakeFiles/ShowArea.dir/MessageDialog.cc.o CMakeFiles/ShowArea.dir/Drawer.cc.o CMakeFiles/ShowArea.dir/moc_MessageDialog.cxx.o CMakeFiles/ShowArea.dir/moc_Drawer.cxx.o  -o ShowArea -rdynamic -lQtGui -lQtCore 

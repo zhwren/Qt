@@ -1,0 +1,1 @@
+/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/ShowArea.dir

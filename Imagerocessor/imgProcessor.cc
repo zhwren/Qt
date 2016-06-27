@@ -1,4 +1,6 @@
 /***********************************************************
+*                                                          *
+*                                                          *
 *                         _ooOoo_                          *
 *                        o8888888o                         *
 *                        88" . "88                         *
@@ -18,38 +20,57 @@
 *      ======`-.____`-.___\_____/___.-`____.-'======       *
 *                         `=---='                          *
 *                                                          *
+*                                                          *
 *      .............................................       *
 *             Buddha bless me, No bug forever              *
 ************************************************************
 *    >  CopyRight   :                                      *
-*    >  File Name   : ShowAreaDialog.hh
+*    >  File Name   : imgProcessor.cc
 *    >  Author      : zhuhaiwen                            *
 *    >  mail        : zhwren0211@whu.edu.cn                *
-*    >  Created Time: 2016-05-19 16:13                     *
+*    >  Created Time: 2016-06-21 11:11                     *
 *    >  PhoneNumber : 18625272373                          *
 ***********************************************************/
-#ifndef ShowAreaDialog_h
-#define ShowAreaDialog_h 1
+#include <QImage>
+#include <QLabel>
+#include <QMenu>
+#include <QMenuBar>
+#include <QAction>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QFontComboBox>
+#include <QTextCharFormat>
 
-#include <QtWidgets/QDialog>
-class QLabel;
-class QLineEdit;
-class QPushButton;
-class ShowAreaDialog : public QDialog
+#include "showWidget.hh"
+#include "imgProcessor.hh"
+
+ImgProcessor::ImgProcessor(QWidget* parent)
+  :QMainWindow(parent)
 {
-  Q_OBJECT
-  public:
-    ShowAreaDialog(QWidget* parent = 0);
-    ~ShowAreaDialog();
-  private:
-    QLabel* radiusLabel;
-    QLabel* areaLabel;
-    QPushButton* okButton;
-    QPushButton* cancelButton;
-    QLineEdit* radiusLineEdit;
-    QLineEdit* areaLineEdit;
-  private slots:
-    void showArea();
-};
+  setWindowTitle("Easy Word");
+  showWidget = new ShowWidget(this);
+  setCentralWidget(showWidget);
+  createActions();
+  createMenus();
+}
 
-#endif
+ImgProcessor::~ImgProcessor()
+{}
+
+void ImgProcessor::createActions()
+{
+  openFileAction = new QAction(QIcon("Open.png"),tr("打开"), this);
+  openFileAction->setShortcut(tr("Ctrl+O"));
+  openFileAction->setStatusTip("打开一个文件");
+
+  newFileAction = new QAction(QIcon("New.png"),tr("新建"), this);
+  newFileAction->setShortcut(tr("Ctrl+N"));
+  newFileAction->setStatusTip("新建一个文件");
+}
+
+void ImgProcessor::createMenus()
+{
+  fileMenu = menuBar()->addMenu("文件");
+  fileMenu->addAction(openFileAction);
+  fileMenu->addAction(newFileAction);
+}

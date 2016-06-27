@@ -1,4 +1,6 @@
 /***********************************************************
+*                                                          *
+*                                                          *
 *                         _ooOoo_                          *
 *                        o8888888o                         *
 *                        88" . "88                         *
@@ -18,38 +20,25 @@
 *      ======`-.____`-.___\_____/___.-`____.-'======       *
 *                         `=---='                          *
 *                                                          *
+*                                                          *
 *      .............................................       *
 *             Buddha bless me, No bug forever              *
 ************************************************************
 *    >  CopyRight   :                                      *
-*    >  File Name   : ShowAreaDialog.hh
+*    >  File Name   : main.cc
 *    >  Author      : zhuhaiwen                            *
 *    >  mail        : zhwren0211@whu.edu.cn                *
-*    >  Created Time: 2016-05-19 16:13                     *
+*    >  Created Time: 2016-06-21 11:05                     *
 *    >  PhoneNumber : 18625272373                          *
 ***********************************************************/
-#ifndef ShowAreaDialog_h
-#define ShowAreaDialog_h 1
+#include "imgProcessor.hh"
+#include <QApplication>
 
-#include <QtWidgets/QDialog>
-class QLabel;
-class QLineEdit;
-class QPushButton;
-class ShowAreaDialog : public QDialog
+int main(int argc, char* argv[])
 {
-  Q_OBJECT
-  public:
-    ShowAreaDialog(QWidget* parent = 0);
-    ~ShowAreaDialog();
-  private:
-    QLabel* radiusLabel;
-    QLabel* areaLabel;
-    QPushButton* okButton;
-    QPushButton* cancelButton;
-    QLineEdit* radiusLineEdit;
-    QLineEdit* areaLineEdit;
-  private slots:
-    void showArea();
-};
+  QApplication app(argc, argv);
+  ImgProcessor* w = new ImgProcessor();
+  w->show();
 
-#endif
+  return app.exec();
+}

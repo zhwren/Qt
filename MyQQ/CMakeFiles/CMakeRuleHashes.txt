@@ -1,0 +1,3 @@
+# Hashes of file build rules.
+83b1b180e240d10307f5ee88067af7cd moc_Drawer.cxx
+41d675a56bd35aa329422bdc518b87ef moc_MessageDialog.cxx

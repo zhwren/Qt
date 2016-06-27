@@ -1,0 +1,102 @@
+Determining if the Q_WS_WIN exist failed with the following output:
+Change Dir: /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec3950757749/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3950757749.dir/build.make CMakeFiles/cmTryCompileExec3950757749.dir/build
+make[1]: Entering directory '/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec3950757749.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -I/usr/include/qt4    -o CMakeFiles/cmTryCompileExec3950757749.dir/CheckSymbolExists.cxx.o -c /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_WIN’ was not declared in this scope
+   return ((int*)(&Q_WS_WIN))[argc];
+                   ^
+CMakeFiles/cmTryCompileExec3950757749.dir/build.make:57: recipe for target 'CMakeFiles/cmTryCompileExec3950757749.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTryCompileExec3950757749.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp'
+Makefile:118: recipe for target 'cmTryCompileExec3950757749/fast' failed
+make: *** [cmTryCompileExec3950757749/fast] Error 2
+
+File /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_WIN
+  return ((int*)(&Q_WS_WIN))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_QWS exist failed with the following output:
+Change Dir: /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec1902316770/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec1902316770.dir/build.make CMakeFiles/cmTryCompileExec1902316770.dir/build
+make[1]: Entering directory '/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec1902316770.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -I/usr/include/qt4    -o CMakeFiles/cmTryCompileExec1902316770.dir/CheckSymbolExists.cxx.o -c /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_QWS’ was not declared in this scope
+   return ((int*)(&Q_WS_QWS))[argc];
+                   ^
+CMakeFiles/cmTryCompileExec1902316770.dir/build.make:57: recipe for target 'CMakeFiles/cmTryCompileExec1902316770.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTryCompileExec1902316770.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp'
+Makefile:118: recipe for target 'cmTryCompileExec1902316770/fast' failed
+make: *** [cmTryCompileExec1902316770/fast] Error 2
+
+File /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_QWS
+  return ((int*)(&Q_WS_QWS))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the Q_WS_MAC exist failed with the following output:
+Change Dir: /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTryCompileExec2251333443/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec2251333443.dir/build.make CMakeFiles/cmTryCompileExec2251333443.dir/build
+make[1]: Entering directory '/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building CXX object CMakeFiles/cmTryCompileExec2251333443.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -I/usr/include/qt4    -o CMakeFiles/cmTryCompileExec2251333443.dir/CheckSymbolExists.cxx.o -c /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘Q_WS_MAC’ was not declared in this scope
+   return ((int*)(&Q_WS_MAC))[argc];
+                   ^
+CMakeFiles/cmTryCompileExec2251333443.dir/build.make:57: recipe for target 'CMakeFiles/cmTryCompileExec2251333443.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTryCompileExec2251333443.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp'
+Makefile:118: recipe for target 'cmTryCompileExec2251333443/fast' failed
+make: *** [cmTryCompileExec2251333443/fast] Error 2
+
+File /home/zhwren/Workfs/Qt/MyQQ/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <QtCore/qglobal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef Q_WS_MAC
+  return ((int*)(&Q_WS_MAC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+

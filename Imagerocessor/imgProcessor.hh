@@ -1,4 +1,6 @@
 /***********************************************************
+*                                                          *
+*                                                          *
 *                         _ooOoo_                          *
 *                        o8888888o                         *
 *                        88" . "88                         *
@@ -18,38 +20,47 @@
 *      ======`-.____`-.___\_____/___.-`____.-'======       *
 *                         `=---='                          *
 *                                                          *
+*                                                          *
 *      .............................................       *
 *             Buddha bless me, No bug forever              *
 ************************************************************
 *    >  CopyRight   :                                      *
-*    >  File Name   : ShowAreaDialog.hh
+*    >  File Name   : imgProcessor.hh
 *    >  Author      : zhuhaiwen                            *
 *    >  mail        : zhwren0211@whu.edu.cn                *
-*    >  Created Time: 2016-05-19 16:13                     *
+*    >  Created Time: 2016-06-21 11:08                     *
 *    >  PhoneNumber : 18625272373                          *
 ***********************************************************/
-#ifndef ShowAreaDialog_h
-#define ShowAreaDialog_h 1
+#ifndef imgProcessor_h
+#define imgProcessor_h 1
 
-#include <QtWidgets/QDialog>
+#include <QMainWindow>
+
+class QImage;
 class QLabel;
-class QLineEdit;
-class QPushButton;
-class ShowAreaDialog : public QDialog
+class QMenu;
+class QMenuBar;
+class QAction;
+class QComboBox;
+class QSpinBox;
+class QFontComboBox;
+class QTextCharFormat;
+class ShowWidget;
+
+class ImgProcessor : public QMainWindow
 {
   Q_OBJECT
   public:
-    ShowAreaDialog(QWidget* parent = 0);
-    ~ShowAreaDialog();
-  private:
-    QLabel* radiusLabel;
-    QLabel* areaLabel;
-    QPushButton* okButton;
-    QPushButton* cancelButton;
-    QLineEdit* radiusLineEdit;
-    QLineEdit* areaLineEdit;
-  private slots:
-    void showArea();
-};
+    ImgProcessor(QWidget* parent=0);
+    ~ImgProcessor();
 
+    void createActions();
+    void createMenus();
+
+  private:
+    ShowWidget* showWidget;
+    QAction* openFileAction;
+    QAction* newFileAction;
+    QMenu* fileMenu;
+};
 #endif

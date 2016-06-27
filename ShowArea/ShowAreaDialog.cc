@@ -30,10 +30,10 @@
 ***********************************************************/
 #include "ShowAreaDialog.hh"
 
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QGridLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
 ShowAreaDialog::ShowAreaDialog(QWidget* parent)
   :QDialog( parent )
 {
