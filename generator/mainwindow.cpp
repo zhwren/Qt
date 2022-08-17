@@ -254,11 +254,62 @@ string GetClockingCbContext(InterfaceInfo &ifInfo, string prefix)
     return ss.str();
 }
 
-/*************************************************************
-** Time        : 2022-08-17 13:02:05                        **
-** Author      : ZhuHaiWen                                  **
-** Description : Create                                     **
-*************************************************************/
+/*****************************************************************************
+** Time        : TIME_CONTEXT                                               **
+** Author      : generator                                                  **
+** Description : Create                                                     **
+*****************************************************************************/
+string GetDriverContext(InterfaceInfo &ifInfo)
+{
+    stringstream ss;
+    ss << endl;
+
+    ss << setw(4) << " " << "vif." << ifInfo.fields[0].name
+       << " <= tr." << ifInfo.fields[0].name << ";" << endl
+       << setw(4) << " " << "fork begin" << endl << setw(8)
+       << " " << "repeat (VLD2DATA_DLY) @vif.drv_cb;" << endl;
+
+    for (size_t i = 1; i < ifInfo.fields.size(); i++) {
+	ss << setw(8) << std::right << " "
+	   << "vif."  << setw(20) << std::left << ifInfo.fields[i].name
+	   << " <= tr."  << ifInfo.fields[i].name << ";" << endl;
+    }
+
+    ss << setw(4) << " " << "end join_none" << endl;
+
+    return ss.str();
+}
+
+/*****************************************************************************
+** Time        : TIME_CONTEXT                                               **
+** Author      : generator                                                  **
+** Description : Create                                                     **
+*****************************************************************************/
+string GetMonitorContext(InterfaceInfo &ifInfo)
+{
+    stringstream ss;
+    ss << endl;
+
+    ss << setw(8) << " " << "tr." << ifInfo.fields[0].name
+       << " = vif." << ifInfo.fields[0].name << ";" << endl
+       << setw(8) << " " << "fork begin" << endl << setw(12)
+       << " " << "repeat (VLD2DATA_DLY) @vif.mon_cb;" << endl;
+
+    for (size_t i = 1; i < ifInfo.fields.size(); i++) {
+	ss << setw(12) << " " << "tr." << setw(20) << std::left
+	   << ifInfo.fields[i].name
+	   << " = vif." << ifInfo.fields[i].name << ";" << endl;
+    }
+
+    ss << setw(8) << " " << "end join_none" << endl;
+    return ss.str();
+}
+
+/*****************************************************************************
+** Time        : TIME_CONTEXT                                               **
+** Author      : generator                                                  **
+** Description : Create                                                     **
+*****************************************************************************/
 string GetFilecontex(InterfaceInfo &ifInfo, string line)
 {
     size_t pos;
@@ -277,11 +328,17 @@ string GetFilecontex(InterfaceInfo &ifInfo, string line)
     } else if ((pos = line.find("INTERFACE_CONTEXT")) != string::npos) {
 	line = GetXactionContext(ifInfo, "logic");
     } else if ((pos = line.find("TIME_CONTEXT")) != string::npos) {
-	line = line.replace(pos, 12, GetTimeContext());
+	line = line.replace(pos, 19, GetTimeContext());
     } else if ((pos = line.find("DRVCB_CONTEXT")) != string::npos) {
 	line = GetClockingCbContext(ifInfo, "inout");
     } else if ((pos = line.find("MONCB_CONTEXT")) != string::npos) {
 	line = GetClockingCbContext(ifInfo, "input");
+    } else if ((pos = line.find("VLD_CONTEXT")) != string::npos) {
+	line = line.replace(pos, 11, ifInfo.fields[0].name);
+    } else if ((pos = line.find("DRIVER_CONTEXT")) != string::npos) {
+	line = GetDriverContext(ifInfo);
+    } else if ((pos = line.find("MONITOR_CONTEXT")) != string::npos) {
+	line = GetMonitorContext(ifInfo);
     }
     return line;
 }
@@ -323,7 +380,7 @@ void GenerateUtilFile(InterfaceInfo &ifInfo, string appendex)
 void GenerateUtil(InterfaceInfo &ifInfo)
 {
     string appendex[] = {"_dec", "_xaction", "_interface", 
-	"_agent", "_driver", "_moniter", "_sequence", "_sequencer"};
+	"_agent", "_driver", "_monitor", "_sequence", "_sequencer"};
     size_t len = sizeof(appendex) / sizeof(appendex[0]);
 
     for (size_t i = 0; i < len; i++) {

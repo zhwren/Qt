@@ -25,36 +25,25 @@
 ** Author       : generator                                                 **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn                    **
 ** Last modified: TIME_CONTEXT                                              **
-** Filename     : demo_agent.sv
+** Filename     : demo_monitor.sv
 ** Phone Number :                                                           **
 ** Discription  :                                                           **
 *****************************************************************************/
-`ifndef __DEMO_AGENT_SV__
-`define __DEMO_AGENT_SV__
+`ifndef __DEMO_MONITOR_SV__
+`define __DEMO_MONITOR_SV__
 
-`include "demo_dec.sv"
+`include "demo_xaction.sv"
 `include "demo_interface.sv"
-`include "demo_driver.sv"
-`include "demo_monitor.sv"
-`include "demo_sequencer.sv"
 
-/*****************************************************************************
-** Time        : TIME_CONTEXT                                               **
-** Author      : generator                                                  **
-** Description : Create                                                     **
-*****************************************************************************/
-class demo_agent extends uvm_agent;
-    int        inst_id;
-    demo_driver    drv;
-    demo_monitor   mon;
-    demo_sequencer sqr;
+class demo_monitor extends uvm_monitor #(demo_xaction);
+    virtual demo_interface vif;
 
-    `uvm_component_utils_begin(demo_agent)
+    `uvm_component_utils_begin(demo_monitor)
     `uvm_component_utils_end
 
-    extern function new(string name="demo_agent", uvm_component parent=null);
-    extern function void build_phase(uvm_phase phase);
+    extern function new(string name="demo_monitor", uvm_component parent=null);
     extern function void connect_phase(uvm_phase phase);
+    extern task main_phase(uvm_phase phase);
 endclass
 
 /*****************************************************************************
@@ -62,7 +51,7 @@ endclass
 ** Author      : generator                                                  **
 ** Description : Create                                                     **
 *****************************************************************************/
-function demo_agent::new(string name="demo_agent", uvm_component parent=null);
+function demo_monitor::new(string name="demo_monitor", uvm_componet parent=null);
     super.new(name, parent);
 endfunction
 
@@ -71,12 +60,12 @@ endfunction
 ** Author      : generator                                                  **
 ** Description : Create                                                     **
 *****************************************************************************/
-function void demo_agent::build_phase(uvm_phase phase);
-    if (is_active == UVM_ACTIVE) begin
-	drv = demo_driver::type_id::create($sformatf("demo_driver_%0d", inst_id), this);
-	sqr = demo_sequencer::type_id::create($sformatf("demo_sequencer_%0d", inst_id), this);
+function void demo_monitor::connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+
+    if (!uvm_config_db#(virtual demo_interface)::get(this, "", "demo_interface", vif)) begin
+	`uvm_fatal(get_name(), $sformatf("demo_interface is null"));
     end
-    mon = demo_monitor::type_id::create($sformatf("demo_monitor_%0d", inst_id), this);
 endfunction
 
 /*****************************************************************************
@@ -84,12 +73,11 @@ endfunction
 ** Author      : generator                                                  **
 ** Description : Create                                                     **
 *****************************************************************************/
-function void demo_agent::connect_phase(uvm_phase phase);
-    super.connect_phase(phase);
-
-    if (is_active == UVM_ACTIVE) begin
-	drv.seq_item_port.connect(sqr.seq_item_export);
+task demo_monitor::main_phase(uvm_phase phase);
+    while (1) begin
+	@vif.mon_cb;
+	MONITOR_CONTEXT
     end
-endfunction
+endtask
 
 `endif
