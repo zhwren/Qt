@@ -22,46 +22,30 @@
 **             Buddha bless me, No bug forever              **
 **                                                          **
 **************************************************************
-** Author       : ZhuHaiWen                                 **
+** Author       : generator                                 **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn    **
-** Last modified: 2022-08-16 18:57:05                       **
-** Filename     : mainwindow.h
-** Phone Number : 15756230211                               **
+** Last modified: TIME_CONTEXT                       **
+** Filename     : demo_xaction.sv
 ** Discription  :                                           **
 *************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+`ifndef __DEMO_XACTION_SV__
+`define __DEMO_XACTION_SV__
 
-#include "interface_info.h"
-#include <QWidget>
+`include "demo_dec.sv"
+import demo_dec::*;
 
-class QLineEdit;
-class QGridLayout;
-class QComboBox;
+class demo_xaction extends uvm_sequence_item;
+    XACTION_CONTEXT
+    extern function new(string name="demo_xaction");
+endclass
 
-class MainWindow : public QWidget
-{
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+/*************************************************************
+** Time        : TIME_CONTEXT                        **
+** Author      : generator                                  **
+** Description : Create                                     **
+*************************************************************/
+function demo_xaction::new(string name="demo_xaction");
+    super.new(name);
+endfunction
 
-private:
-    std::vector<InterfaceInfo> interfaces;
-    QLineEdit   *prjNameEdit;
-    QLineEdit   *moduleNameEdit;
-    QComboBox   *ifSelectBox;
-    QGridLayout *mainLayout;
-
-private:
-    void UpdateInterfaceLists();
-    void AddFunctionalGroup(int, int);
-    void AddProjectInfoGroup(int, int);
-    void AddInterfaceSelectionGroup(int, int);
-
-private slots:
-    void ShowInterfaceDetail();
-    void GenerateUtils();
-    void GenerateEnvironment();
-};
-#endif
+`endif

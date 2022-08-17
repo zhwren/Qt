@@ -33,9 +33,17 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
+#include <QDate>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPushButton>
+
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <iostream>
+#include "boost/property_tree/ptree.hpp"
+#include "boost/property_tree/ini_parser.hpp"
 
 using namespace std;
 
@@ -45,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout = new QGridLayout(this);
     AddProjectInfoGroup(0, 0);
     AddInterfaceSelectionGroup(1, 0);
+    AddFunctionalGroup(2, 0);
 }
 
 MainWindow::~MainWindow()
@@ -83,19 +92,20 @@ void MainWindow::AddInterfaceSelectionGroup(int row, int column)
 {
     QLabel *ifSelectLabel = new QLabel("Interface:");
     ifSelectBox = new QComboBox();
-    QPushButton *detailButton = new QPushButton("Detail");
+    //QPushButton *detailButton = new QPushButton("Detail");
 
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(ifSelectLabel, 0, 0);
     layout->addWidget(ifSelectBox,   0, 1);
-    layout->addWidget(detailButton,  0, 2);
+    //layout->addWidget(detailButton,  0, 2);
 
     QGroupBox *gbox = new QGroupBox("InterfaceInfo");
     gbox->setLayout(layout);
     mainLayout->addWidget(gbox, row, column);
 
     UpdateInterfaceLists();
-    connect(detailButton, SIGNAL(clicked()), this, SLOT(ShowInterfaceDetail()));
+    //connect(detailButton, SIGNAL(clicked()), this, SLOT(ShowInterfaceDetail()));
+    connect(ifSelectBox, SIGNAL(currentIndexChanged(int)), this, SLOT(ShowInterfaceDetail()));
 }
 
 /*************************************************************
@@ -105,35 +115,28 @@ void MainWindow::AddInterfaceSelectionGroup(int row, int column)
 *************************************************************/
 void MainWindow::UpdateInterfaceLists()
 {
+    FieldInfo     field;
     InterfaceInfo interface;
-    interface.name = "dpi_orb_sdb_data";
+    boost::property_tree::ptree ptr;
+    boost::property_tree::ini_parser::read_ini("cfg.ini", ptr);
+    boost::property_tree::ptree::iterator it, pt;
 
-    FieldInfo field;
-    field.name = "up_dn_vld";
-    field.width = 14;
-    interface.fields.push_back(field);
-
-    field.name = "up_ecc";
-    field.width = 12;
-    interface.fields.push_back(field);
-
-    field.name = "up_data";
-    field.width = 1024;
-    interface.fields.push_back(field);
-
-    field.name = "down_ecc";
-    field.width = 12;
-    interface.fields.push_back(field);
-
-    field.name = "down_data";
-    field.width = 1024;
-    interface.fields.push_back(field);
-
-    interfaces.push_back(interface);
+    for (it = ptr.begin(); it != ptr.end(); it++) {
+	interface.name = it->first.data();
+	interface.fields.clear();
+	for (pt = it->second.begin(); pt != it->second.end(); pt++) {
+	    field.name = pt->first.data();
+	    field.width = atoi(pt->second.data().c_str());
+	    interface.fields.push_back(field);
+	}
+        interfaces.push_back(interface);
+    }
 
     for (size_t i = 0; i < interfaces.size(); i++) {
 	ifSelectBox->addItem(interfaces[i].name.c_str());
     }
+
+    ShowInterfaceDetail();
 }
 
 /*************************************************************
@@ -143,6 +146,207 @@ void MainWindow::UpdateInterfaceLists()
 *************************************************************/
 void MainWindow::ShowInterfaceDetail()
 {
-    InterfaceDialog::GetInstance(this)->ShowInterfaceInfo(interfaces[0]);
+    int index = ifSelectBox->currentIndex();
+    InterfaceDialog::GetInstance(this)->ShowInterfaceInfo(interfaces[index]);
     InterfaceDialog::GetInstance(this)->show();
 }
+
+/*************************************************************
+** Time        : 2022-08-17 10:13:03                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+void MainWindow::AddFunctionalGroup(int row, int column)
+{
+    QPushButton *genVip = new QPushButton("GenVIP");
+    QPushButton *genEnv = new QPushButton("GenENV");
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(genVip, 0, 0);
+    layout->addWidget(genEnv, 0, 1);
+
+    QGroupBox *gbox = new QGroupBox();
+    gbox->setLayout(layout);
+
+    mainLayout->addWidget(gbox, row, column);
+    connect(genVip, SIGNAL(clicked()), this, SLOT(GenerateUtils()));
+    connect(genEnv, SIGNAL(clicked()), this, SLOT(GenerateEnvironment()));
+}
+
+/*************************************************************
+** Time        : 2022-08-17 13:13:29                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+string ToUpper(string s)
+{
+    for (size_t i = 0; i < s.size(); i++) {
+	s[i] = toupper(s[i]);
+    }
+
+    return s;
+}
+
+/*************************************************************
+** Time        : 2022-08-17 13:28:21                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+string GetDeccontext(InterfaceInfo &ifInfo)
+{
+    stringstream ss;
+    ss << endl;
+    ss << setw(14) << std::right << "parameter "
+       << setw(20) << std::left  << "VLD2DATA_DLY" << " = 0;" << endl;
+    for (size_t i = 0; i < ifInfo.fields.size(); i++) {
+	ss << setw(14) << std::right << "parameter " 
+	   << setw(20) << std::left  << ToUpper(ifInfo.fields[i].name + "_WIDTH")
+	   << " = " << ifInfo.fields[i].width << ";" << endl;
+    }
+
+    return ss.str();
+}
+
+/*************************************************************
+** Time        : 2022-08-17 13:43:22                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+string GetXactionContext(InterfaceInfo &ifInfo, string prefix)
+{
+    stringstream ss;
+    ss << endl;
+    for (size_t i = 0; i < ifInfo.fields.size(); i++) {
+	ss << setw(prefix.size() + 4) << std::right << prefix << " ["
+	   << setw(20) << std::left  << ToUpper(ifInfo.fields[i].name + "_WIDTH")
+	   << "-1:0] " << ifInfo.fields[i].name << ";" << endl;
+    }
+
+    return ss.str();
+}
+
+/*************************************************************
+** Time        : 2022-08-17 14:57:29                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+string GetTimeContext()
+{
+    string contex = QDate::currentDate().toString("yyyy-MM-dd").toStdString();
+    contex += " ";
+    contex += QTime::currentTime().toString("HH:mm:ss").toStdString();
+    return contex;
+}
+
+/*************************************************************
+** Time        : 2022-08-17 16:32:37                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+string GetClockingCbContext(InterfaceInfo &ifInfo, string prefix)
+{
+    stringstream ss;
+    ss << endl;
+    for (size_t i = 0; i < ifInfo.fields.size(); i++) {
+	ss << setw(prefix.size() + 8) << std::right << prefix
+	   << " " << ifInfo.fields[i].name << ";" << endl;
+    }
+
+    return ss.str();
+}
+
+/*************************************************************
+** Time        : 2022-08-17 13:02:05                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+string GetFilecontex(InterfaceInfo &ifInfo, string line)
+{
+    size_t pos;
+
+    while ((pos = line.find("demo")) != string::npos) {
+	line = line.replace(pos, 4, ifInfo.name);
+    }
+    while ((pos = line.find("DEMO")) != string::npos) {
+	line = line.replace(pos, 4, ToUpper(ifInfo.name));
+    }
+
+    if ((pos = line.find("DEC_CONTEXT")) != string::npos) {
+	line = GetDeccontext(ifInfo);
+    } else if ((pos = line.find("XACTION_CONTEXT")) != string::npos) {
+	line = GetXactionContext(ifInfo, "rand bit");
+    } else if ((pos = line.find("INTERFACE_CONTEXT")) != string::npos) {
+	line = GetXactionContext(ifInfo, "logic");
+    } else if ((pos = line.find("TIME_CONTEXT")) != string::npos) {
+	line = line.replace(pos, 12, GetTimeContext());
+    } else if ((pos = line.find("DRVCB_CONTEXT")) != string::npos) {
+	line = GetClockingCbContext(ifInfo, "inout");
+    } else if ((pos = line.find("MONCB_CONTEXT")) != string::npos) {
+	line = GetClockingCbContext(ifInfo, "input");
+    }
+    return line;
+}
+
+/*************************************************************
+** Time        : 2022-08-17 12:56:25                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+void GenerateUtilFile(InterfaceInfo &ifInfo, string appendex)
+{
+    string iName = "demo/demo" + appendex + ".sv";
+    string oName = ifInfo.name + appendex + ".sv";
+
+    ifstream iFile(iName.c_str());
+    if (!iFile.is_open()) {
+	return;
+    }
+
+    ofstream oFile(oName.c_str());
+    if (!oFile.is_open()) {
+	iFile.close();
+	return;
+    }
+
+    string line;
+    while (getline(iFile, line)) {
+	oFile << GetFilecontex(ifInfo, line) << endl;
+    }
+    iFile.close();
+    oFile.close();
+}
+
+/*************************************************************
+** Time        : 2022-08-17 10:43:54                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+void GenerateUtil(InterfaceInfo &ifInfo)
+{
+    string appendex[] = {"_dec", "_xaction", "_interface", 
+	"_agent", "_driver", "_moniter", "_sequence", "_sequencer"};
+    size_t len = sizeof(appendex) / sizeof(appendex[0]);
+
+    for (size_t i = 0; i < len; i++) {
+	GenerateUtilFile(ifInfo, appendex[i]);
+    }
+}
+
+/*************************************************************
+** Time        : 2022-08-17 10:41:19                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+void MainWindow::GenerateUtils()
+{
+    for (size_t i = 0; i < interfaces.size(); i++) {
+	GenerateUtil(interfaces[i]);
+    }
+}
+
+/*************************************************************
+** Time        : 2022-08-17 10:41:32                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+void MainWindow::GenerateEnvironment()
+{}

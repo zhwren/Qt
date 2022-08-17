@@ -22,46 +22,31 @@
 **             Buddha bless me, No bug forever              **
 **                                                          **
 **************************************************************
-** Author       : ZhuHaiWen                                 **
+** Author       : generator                                 **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn    **
-** Last modified: 2022-08-16 18:57:05                       **
-** Filename     : mainwindow.h
-** Phone Number : 15756230211                               **
+** Last modified: TIME_CONTEXT                       **
+** Filename     : demo_sequencer.sv
 ** Discription  :                                           **
 *************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+`ifndef __DEMO_SEQUENCER_SV__
+`define __DEMO_SEQUENCER_SV__
 
-#include "interface_info.h"
-#include <QWidget>
+`include "demo_xaction.sv"
 
-class QLineEdit;
-class QGridLayout;
-class QComboBox;
+class demo_sequencer extends uvm_sequencer#(demo_xaction);
+    `uvm_component_utils_begin(demo_sequencer)
+    `uvm_component_utils_end
 
-class MainWindow : public QWidget
-{
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    extern function new(string name="demo_sequencer", uvm_component parent=null);
+endclass
 
-private:
-    std::vector<InterfaceInfo> interfaces;
-    QLineEdit   *prjNameEdit;
-    QLineEdit   *moduleNameEdit;
-    QComboBox   *ifSelectBox;
-    QGridLayout *mainLayout;
+/*************************************************************
+** Time        : TIME_CONTEXT                        **
+** Author      : generator                                  **
+** Description : Create                                     **
+*************************************************************/
+function demo_sequencer::new(string name="demo_sequencer", uvm_component parent=null);
+    super.new(name, parent);
+endfunction
 
-private:
-    void UpdateInterfaceLists();
-    void AddFunctionalGroup(int, int);
-    void AddProjectInfoGroup(int, int);
-    void AddInterfaceSelectionGroup(int, int);
-
-private slots:
-    void ShowInterfaceDetail();
-    void GenerateUtils();
-    void GenerateEnvironment();
-};
-#endif
+`endif

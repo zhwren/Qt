@@ -24,44 +24,29 @@
 **************************************************************
 ** Author       : ZhuHaiWen                                 **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn    **
-** Last modified: 2022-08-16 18:57:05                       **
-** Filename     : mainwindow.h
-** Phone Number : 15756230211                               **
+** Last modified: TIME_CONTEXT                       **
+** Filename     : demo_monirot.sv
 ** Discription  :                                           **
 *************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+`ifndef __DEMO_MONITOR_SV__
+`define __DEMO_MONITOR_SV__
 
-#include "interface_info.h"
-#include <QWidget>
+`include "demo_xaction.sv"
 
-class QLineEdit;
-class QGridLayout;
-class QComboBox;
+class demo_monitor extends uvm_monitor #(demo_xaction);
+    `uvm_component_utils_begin(demo_monitor)
+    `uvm_component_utils_end
 
-class MainWindow : public QWidget
-{
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    extern function new(string name="demo_monitor", uvm_component parent=null);
+endclass
 
-private:
-    std::vector<InterfaceInfo> interfaces;
-    QLineEdit   *prjNameEdit;
-    QLineEdit   *moduleNameEdit;
-    QComboBox   *ifSelectBox;
-    QGridLayout *mainLayout;
+/*************************************************************
+** Time        : TIME_CONTEXT                        **
+** Author      : ZhuHaiWen                                  **
+** Description : Create                                     **
+*************************************************************/
+function demo_monitor::new(string name="demo_monitor", uvm_componet parent=null);
+    super.new(name, parent);
+endfunction
 
-private:
-    void UpdateInterfaceLists();
-    void AddFunctionalGroup(int, int);
-    void AddProjectInfoGroup(int, int);
-    void AddInterfaceSelectionGroup(int, int);
-
-private slots:
-    void ShowInterfaceDetail();
-    void GenerateUtils();
-    void GenerateEnvironment();
-};
-#endif
+`endif

@@ -22,46 +22,17 @@
 **             Buddha bless me, No bug forever              **
 **                                                          **
 **************************************************************
-** Author       : ZhuHaiWen                                 **
+** Author       : generator                                 **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn    **
-** Last modified: 2022-08-16 18:57:05                       **
-** Filename     : mainwindow.h
-** Phone Number : 15756230211                               **
+** Last modified: TIME_CONTEXT                       **
+** Filename     : demo_dec.sv
 ** Discription  :                                           **
 *************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+`ifndef __DEMO_DEC_SV__
+`define __DEMO_DEC_SV__
 
-#include "interface_info.h"
-#include <QWidget>
+package demo_dec;
+    DEC_CONTEXT
+endpackage
 
-class QLineEdit;
-class QGridLayout;
-class QComboBox;
-
-class MainWindow : public QWidget
-{
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-
-private:
-    std::vector<InterfaceInfo> interfaces;
-    QLineEdit   *prjNameEdit;
-    QLineEdit   *moduleNameEdit;
-    QComboBox   *ifSelectBox;
-    QGridLayout *mainLayout;
-
-private:
-    void UpdateInterfaceLists();
-    void AddFunctionalGroup(int, int);
-    void AddProjectInfoGroup(int, int);
-    void AddInterfaceSelectionGroup(int, int);
-
-private slots:
-    void ShowInterfaceDetail();
-    void GenerateUtils();
-    void GenerateEnvironment();
-};
-#endif
+`endif

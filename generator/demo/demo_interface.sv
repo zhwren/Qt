@@ -22,46 +22,28 @@
 **             Buddha bless me, No bug forever              **
 **                                                          **
 **************************************************************
-** Author       : ZhuHaiWen                                 **
+** Author       : generator                                 **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn    **
-** Last modified: 2022-08-16 18:57:05                       **
-** Filename     : mainwindow.h
-** Phone Number : 15756230211                               **
+** Last modified: TIME_CONTEXT                        **
+** Filename     : demo_interface.sv
 ** Discription  :                                           **
 *************************************************************/
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+`ifndef __DEMO_INTERFACE_SV__
+`define __DEMO_INTERFACE_SV__
 
-#include "interface_info.h"
-#include <QWidget>
+`include "demo_dec.sv"
+import demo_dec::*;
 
-class QLineEdit;
-class QGridLayout;
-class QComboBox;
+interface demo_interface(input clk, input rst_n);
+    INTERFACE_CONTEXT
 
-class MainWindow : public QWidget
-{
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    clocking drv_cb @(posedge clk);
+	DRVCB_CONTEXT
+    endclocking
 
-private:
-    std::vector<InterfaceInfo> interfaces;
-    QLineEdit   *prjNameEdit;
-    QLineEdit   *moduleNameEdit;
-    QComboBox   *ifSelectBox;
-    QGridLayout *mainLayout;
+    clocking mon_cb @(posedge clk);
+	MONCB_CONTEXT
+    endclocking
+endinterface
 
-private:
-    void UpdateInterfaceLists();
-    void AddFunctionalGroup(int, int);
-    void AddProjectInfoGroup(int, int);
-    void AddInterfaceSelectionGroup(int, int);
-
-private slots:
-    void ShowInterfaceDetail();
-    void GenerateUtils();
-    void GenerateEnvironment();
-};
-#endif
+`endif
