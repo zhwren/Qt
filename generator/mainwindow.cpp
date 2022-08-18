@@ -380,7 +380,8 @@ void GenerateUtilFile(InterfaceInfo &ifInfo, string appendex)
 void GenerateUtil(InterfaceInfo &ifInfo)
 {
     string appendex[] = {"_dec", "_xaction", "_interface", 
-	"_agent", "_driver", "_monitor", "_sequence", "_sequencer"};
+	"_agent", "_driver", "_monitor", "_sequence", "_sequencer"
+    };
     size_t len = sizeof(appendex) / sizeof(appendex[0]);
 
     for (size_t i = 0; i < len; i++) {
@@ -406,4 +407,5 @@ void MainWindow::GenerateUtils()
 ** Description : Create                                     **
 *************************************************************/
 void MainWindow::GenerateEnvironment()
-{}
+{
+}
