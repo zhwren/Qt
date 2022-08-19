@@ -12,7 +12,7 @@ SOURCES += main.cpp mainwindow.cpp interface_info.cpp
 
 HEADERS += mainwindow.h interface_info.h
 
-LIBS += -L../../boost_1_80_0/stage/lib/ -lboost_system-mgw7-mt-d-x64-1_80
+LIBS += -lboost_system
 
 INCLUDEPATH += ../../boost_1_80_0
 DEPENDPATH += ../../boost_1_80_0

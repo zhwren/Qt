@@ -25,29 +25,23 @@
 ** Author       : generator                                                 **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn                    **
 ** Last modified: TIME_CONTEXT                                              **
-** Filename     : demo_driver.sv
+** Filename     : demo_tc.sv
 ** Phone Number :                                                           **
 ** Discription  :                                                           **
 *****************************************************************************/
-`ifndef __DEMO_DRIVER_SV__
-`define __DEMO_DRIVER_SV__
+`ifndef __DEMO_TC_SV__
+`define __DEMO_TC_SV__
 
-`include "demo_dec.sv"
-`include "demo_xaction.sv"
-`include "demo_interface.sv"
-import demo_dec::*;
+`include "demo_env.sv"
 
-class demo_driver extends uvm_driver #(demo_xaction);
-    int inst_id;
-    virtual demo_interface vif;
+class demo_tc extends uvm_test;
+    demo_env  env;
 
-    `uvm_component_utils_begin(demo_driver)
+    `uvm_component_utils_begin(demo_tc)
     `uvm_component_utils_end
 
-    extern function new(string name="demo_driver", uvm_component parent=null);
-    extern function void connect_phase(uvm_phase phase);
-    extern task main_phase(uvm_phase phase);
-    extern task drive_one_pkt(demo_xaction tr);
+    extern function new(string name="demo_tc", uvm_component parent=null);
+    extern virtual function void build_phase(uvm_phase phase);
 endclass
 
 /*****************************************************************************
@@ -55,7 +49,7 @@ endclass
 ** Author      : generator                                                  **
 ** Description : Create                                                     **
 *****************************************************************************/
-function demo_driver::new(string name="demo_driver", uvm_component parent=null);
+function demo_tc::new(string name="demo_tc", uvm_component parent=null);
     super.new(name, parent);
 endfunction
 
@@ -64,40 +58,10 @@ endfunction
 ** Author      : generator                                                  **
 ** Description : Create                                                     **
 *****************************************************************************/
-function void demo_driver::connect_phase(uvm_phase phase);
-    super.connect_phase(phase);
-    if (!uvm_config_db#(virtual demo_interface)::get(this, "", $sformatf("demo_interface[%0d]", inst_id), vif)) begin
-        `uvm_fatal(get_name(), $sformatf("demo_interface is null"));
-    end
+function void demo_tc::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+
+    env = demo_env::type_id::create("env", this);
 endfunction
-
-/*****************************************************************************
-** Time        : TIME_CONTEXT                                               **
-** Author      : generator                                                  **
-** Description : Create                                                     **
-*****************************************************************************/
-task demo_driver::main_phase(uvm_phase phase);
-    while (1) begin
-	@vif.drv_cb;
-	seq_item_port.try_next_item(req);
-	if (req == null) begin
-	    req = new();
-	    req.randomize() with {VLD_CONTEXT == '0;};
-	    drive_one_pkt(req);
-	end else begin
-	    drive_one_pkt(req);
-	    seq_item_port.item_done();
-	end
-    end
-endtask
-
-/*****************************************************************************
-** Time        : TIME_CONTEXT                                               **
-** Author      : generator                                                  **
-** Description : Create                                                     **
-*****************************************************************************/
-task demo_driver::drive_one_pkt(demo_xaction tr);
-    DRIVER_CONTEXT
-endtask
 
 `endif

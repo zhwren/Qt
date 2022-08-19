@@ -50,7 +50,13 @@ using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
-    mainLayout = new QGridLayout(this);
+    leftLayout = new QGridLayout();
+    rightLayout = new QGridLayout();
+    mainLayout  = new QGridLayout(this);
+    mainLayout->addLayout(leftLayout, 0, 0);
+    mainLayout->addLayout(rightLayout, 0, 1);
+
+    AddFieldInfoGroup();
     AddProjectInfoGroup(0, 0);
     AddInterfaceSelectionGroup(1, 0);
     AddFunctionalGroup(2, 0);
@@ -58,6 +64,35 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+}
+
+/*****************************************************************************
+** Time        : TIME_CONTEXT                                               **
+** Author      : generator                                                  **
+** Description : Create                                                     **
+*****************************************************************************/
+void MainWindow::AddFieldInfoGroup()
+{
+    QLabel *ifNameLabel = new QLabel("InterfaceName:");
+    ifNameEdit = new QLineEdit();
+    QLabel *fieldNumLabel = new QLabel("FieldNumber:");
+    fieldNumEdit = new QLineEdit();
+    
+    QGridLayout *layout = new QGridLayout();
+    layout->addWidget(ifNameLabel, 0, 0);
+    layout->addWidget(ifNameEdit,  0, 1);
+    layout->addWidget(fieldNumLabel, 1, 0);
+    layout->addWidget(fieldNumEdit,  1, 1);
+
+    QGroupBox *gbox = new QGroupBox("InterfaceInfo");
+    gbox->setLayout(layout);
+
+    infoLayout = new QGridLayout();
+    QGroupBox *ibox = new QGroupBox("FieldInfo");
+    ibox->setLayout(infoLayout);
+
+    rightLayout->addWidget(gbox, 0, 0);
+    rightLayout->addWidget(ibox, 1, 0);
 }
 
 /*************************************************************
@@ -80,7 +115,7 @@ void MainWindow::AddProjectInfoGroup(int row, int column)
 
     QGroupBox *gbox = new QGroupBox("ProjectInfo");
     gbox->setLayout(layout);
-    mainLayout->addWidget(gbox, row, column);
+    leftLayout->addWidget(gbox, row, column);
 }
 
 /*************************************************************
@@ -92,19 +127,16 @@ void MainWindow::AddInterfaceSelectionGroup(int row, int column)
 {
     QLabel *ifSelectLabel = new QLabel("Interface:");
     ifSelectBox = new QComboBox();
-    //QPushButton *detailButton = new QPushButton("Detail");
 
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(ifSelectLabel, 0, 0);
     layout->addWidget(ifSelectBox,   0, 1);
-    //layout->addWidget(detailButton,  0, 2);
 
     QGroupBox *gbox = new QGroupBox("InterfaceInfo");
     gbox->setLayout(layout);
-    mainLayout->addWidget(gbox, row, column);
+    leftLayout->addWidget(gbox, row, column);
 
     UpdateInterfaceLists();
-    //connect(detailButton, SIGNAL(clicked()), this, SLOT(ShowInterfaceDetail()));
     connect(ifSelectBox, SIGNAL(currentIndexChanged(int)), this, SLOT(ShowInterfaceDetail()));
 }
 
@@ -147,8 +179,32 @@ void MainWindow::UpdateInterfaceLists()
 void MainWindow::ShowInterfaceDetail()
 {
     int index = ifSelectBox->currentIndex();
-    InterfaceDialog::GetInstance(this)->ShowInterfaceInfo(interfaces[index]);
-    InterfaceDialog::GetInstance(this)->show();
+    InterfaceInfo ifInfo = interfaces[index];
+
+    ifNameEdit->setText(ifInfo.name.c_str());
+    fieldNumEdit->setText(QString(to_string(ifInfo.fields.size()).c_str()));
+
+    for (size_t i = fieldNameEdit.size(); i < ifInfo.fields.size(); i++) {
+	QLineEdit *nameEdit = new QLineEdit();
+	fieldNameEdit.push_back(nameEdit);
+	QLineEdit *widthEdit = new QLineEdit();
+	fieldWidthEdit.push_back(widthEdit);
+	infoLayout->addWidget(nameEdit, i, 0);
+	infoLayout->addWidget(widthEdit, i, 1);
+    }
+
+    for (size_t i = 0; i < ifInfo.fields.size(); i++) {
+	fieldNameEdit[i]->setText(ifInfo.fields[i].name.c_str());
+	fieldWidthEdit[i]->setText(QString(to_string(ifInfo.fields[i].width).c_str()));
+	fieldNameEdit[i]->setVisible(true);
+	fieldWidthEdit[i]->setVisible(true);
+    }
+
+    for (size_t i = ifInfo.fields.size(); i < fieldNameEdit.size(); i++) {
+	fieldNameEdit[i]->setVisible(false);
+	fieldWidthEdit[i]->setVisible(false);
+    }
+
 }
 
 /*************************************************************
@@ -167,7 +223,7 @@ void MainWindow::AddFunctionalGroup(int row, int column)
     QGroupBox *gbox = new QGroupBox();
     gbox->setLayout(layout);
 
-    mainLayout->addWidget(gbox, row, column);
+    leftLayout->addWidget(gbox, row, column);
     connect(genVip, SIGNAL(clicked()), this, SLOT(GenerateUtils()));
     connect(genEnv, SIGNAL(clicked()), this, SLOT(GenerateEnvironment()));
 }

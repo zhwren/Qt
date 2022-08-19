@@ -25,62 +25,24 @@
 ** Author       : generator                                                 **
 ** Email        : zhuhw@ihep.ac.cn/zhwren0211@whu.edu.cn                    **
 ** Last modified: TIME_CONTEXT                                              **
-** Filename     : demo_monitor.sv
+** Filename     : demo_top.sv
 ** Phone Number :                                                           **
 ** Discription  :                                                           **
 *****************************************************************************/
-`ifndef __DEMO_MONITOR_SV__
-`define __DEMO_MONITOR_SV__
+`ifndef __DEMO_TOP_SV__
+`define __DEMO_TOP_SV__
+TOP_INCLUDE_CONTEXT
+`include "uvm_macros.svh"
+import uvm_pkg::*;
+`include "demo_tc.sv"
 
-`include "demo_xaction.sv"
-`include "demo_interface.sv"
-
-class demo_monitor extends uvm_monitor;
-    int inst_id;
-    virtual demo_interface vif;
-
-    `uvm_component_utils_begin(demo_monitor)
-    `uvm_component_utils_end
-
-    extern function new(string name="demo_monitor", uvm_component parent=null);
-    extern function void connect_phase(uvm_phase phase);
-    extern task main_phase(uvm_phase phase);
-endclass
-
-/*****************************************************************************
-** Time        : TIME_CONTEXT                                               **
-** Author      : generator                                                  **
-** Description : Create                                                     **
-*****************************************************************************/
-function demo_monitor::new(string name="demo_monitor", uvm_component parent=null);
-    super.new(name, parent);
-endfunction
-
-/*****************************************************************************
-** Time        : TIME_CONTEXT                                               **
-** Author      : generator                                                  **
-** Description : Create                                                     **
-*****************************************************************************/
-function void demo_monitor::connect_phase(uvm_phase phase);
-    super.connect_phase(phase);
-
-    if (!uvm_config_db#(virtual demo_interface)::get(this, "", $sformatf("demo_interface[%0d]", inst_id), vif)) begin
-        `uvm_fatal(get_name(), $sformatf("demo_interface is null"));
+module demo_top;
+    logic clk;
+    logic rst_n;
+    TOP_DECLARE_CONTEXT
+    initial begin
+        run_test();
     end
-endfunction
-
-/*****************************************************************************
-** Time        : TIME_CONTEXT                                               **
-** Author      : generator                                                  **
-** Description : Create                                                     **
-*****************************************************************************/
-task demo_monitor::main_phase(uvm_phase phase);
-    demo_xaction tr;
-    while (1) begin
-	@vif.mon_cb;
-        tr = new();
-	MONITOR_CONTEXT
-    end
-endtask
+endmodule
 
 `endif

@@ -75,8 +75,10 @@ function void demo_agent::build_phase(uvm_phase phase);
     if (is_active == UVM_ACTIVE) begin
 	drv = demo_driver::type_id::create($sformatf("demo_driver_%0d", inst_id), this);
 	sqr = demo_sequencer::type_id::create($sformatf("demo_sequencer_%0d", inst_id), this);
+        drv.inst_id = inst_id;
     end
     mon = demo_monitor::type_id::create($sformatf("demo_monitor_%0d", inst_id), this);
+    mon.inst_id = inst_id;
 endfunction
 
 /*****************************************************************************

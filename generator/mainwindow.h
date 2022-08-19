@@ -50,18 +50,32 @@ private:
     std::vector<InterfaceInfo> interfaces;
     QLineEdit   *prjNameEdit;
     QLineEdit   *moduleNameEdit;
+    QLineEdit   *workdirEdit;
     QComboBox   *ifSelectBox;
     QGridLayout *mainLayout;
+    QGridLayout *leftLayout;
+    QGridLayout *rightLayout;
+
+    QLineEdit   *ifNameEdit;
+    QLineEdit   *fieldNumEdit;
+    QGridLayout *infoLayout;
+    std::vector<QLineEdit*> fieldNameEdit;
+    std::vector<QLineEdit*> fieldWidthEdit;
 
 private:
+    void AddFieldInfoGroup();
     void UpdateInterfaceLists();
     void AddFunctionalGroup(int, int);
     void AddProjectInfoGroup(int, int);
     void AddInterfaceSelectionGroup(int, int);
 
 private slots:
+    void SelectWorkdir();
     void ShowInterfaceDetail();
     void GenerateUtils();
     void GenerateEnvironment();
+    void AddInterfaceProcess();
+    void ChangeFieldNumber();
+    void SaveFieldInfoProcess();
 };
 #endif
