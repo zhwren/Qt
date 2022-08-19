@@ -310,7 +310,7 @@ string GetMonitorContext(InterfaceInfo &ifInfo)
 ** Author      : generator                                                  **
 ** Description : Create                                                     **
 *****************************************************************************/
-string GetFilecontex(InterfaceInfo &ifInfo, string line)
+string GetUtilsFilecontex(InterfaceInfo &ifInfo, string line)
 {
     size_t pos;
 
@@ -366,7 +366,7 @@ void GenerateUtilFile(InterfaceInfo &ifInfo, string appendex)
 
     string line;
     while (getline(iFile, line)) {
-	oFile << GetFilecontex(ifInfo, line) << endl;
+	oFile << GetUtilsFilecontex(ifInfo, line) << endl;
     }
     iFile.close();
     oFile.close();
@@ -401,6 +401,58 @@ void MainWindow::GenerateUtils()
     }
 }
 
+/*****************************************************************************
+** Time        : TIME_CONTEXT                                               **
+** Author      : generator                                                  **
+** Description : Create                                                     **
+*****************************************************************************/
+string GetEnvFilecontex(vector<InterfaceInfo> &ifInfo, string line)
+{
+    size_t pos;
+
+    //while ((pos = line.find("demo")) != string::npos) {
+    //    line = line.replace(pos, 4, ifInfo.name);
+    //}
+    //while ((pos = line.find("DEMO")) != string::npos) {
+    //    line = line.replace(pos, 4, ToUpper(ifInfo.name));
+    //}
+
+    if ((pos = line.find("TIME_CONTEXT")) != string::npos) {
+	line = line.replace(pos, 19, GetTimeContext());
+    } 
+
+    return line;
+}
+
+/*****************************************************************************
+** Time        : TIME_CONTEXT                                               **
+** Author      : generator                                                  **
+** Description : Create                                                     **
+*****************************************************************************/
+void GenerateEnvFile(vector<InterfaceInfo> &ifInfo, string appendex)
+{
+    string iName = "demo/demo" + appendex + ".sv";
+    string oName = appendex + ".sv";
+
+    ifstream iFile(iName.c_str());
+    if (!iFile.is_open()) {
+	return;
+    }
+
+    ofstream oFile(oName.c_str());
+    if (!oFile.is_open()) {
+	iFile.close();
+	return;
+    }
+
+    string line;
+    while (getline(iFile, line)) {
+	oFile << GetEnvFilecontex(ifInfo, line) << endl;
+    }
+    iFile.close();
+    oFile.close();
+}
+
 /*************************************************************
 ** Time        : 2022-08-17 10:41:32                        **
 ** Author      : ZhuHaiWen                                  **
@@ -408,4 +460,10 @@ void MainWindow::GenerateUtils()
 *************************************************************/
 void MainWindow::GenerateEnvironment()
 {
+    string appendex[] = {"_env_dec", "_env", "_rm", "_e2e_chk"};
+    size_t len = sizeof(appendex) / sizeof(appendex[0]);
+
+    for (size_t i = 0; i < len; i++) {
+	GenerateEnvFile(interfaces, appendex[i]);
+    }
 }
