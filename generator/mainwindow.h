@@ -47,6 +47,7 @@ public:
     ~MainWindow();
 
 private:
+    size_t      currentIndex;
     std::vector<InterfaceInfo> interfaces;
     QLineEdit   *prjNameEdit;
     QLineEdit   *moduleNameEdit;
@@ -63,6 +64,7 @@ private:
     std::vector<QLineEdit*> fieldWidthEdit;
 
 private:
+    void ShowOneInterfaceInfo(InterfaceInfo &ifInfo);
     void AddFieldInfoGroup();
     void UpdateInterfaceLists();
     void AddFunctionalGroup(int, int);
@@ -70,7 +72,7 @@ private:
     void AddInterfaceSelectionGroup(int, int);
 
 private slots:
-    //void SelectWorkdir();
+    void SelectWorkdir();
     void ShowInterfaceDetail();
     void GenerateUtils();
     void GenerateEnvironment();

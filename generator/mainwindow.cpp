@@ -34,6 +34,9 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QDate>
+#include <QDir>
+#include <QMessageBox>
+#include <QFileDialog>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPushButton>
@@ -80,7 +83,6 @@ void MainWindow::AddFieldInfoGroup()
     fieldNumEdit = new QLineEdit();
     fieldNumEdit->setValidator(new QIntValidator(1, 99, this));
     QPushButton *saveButton = new QPushButton("Save");
-    QPushButton *cancButton = new QPushButton("Cancle");
     
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(ifNameLabel, 0, 0);
@@ -91,11 +93,21 @@ void MainWindow::AddFieldInfoGroup()
     QGroupBox *gbox = new QGroupBox("InterfaceInfo");
     gbox->setLayout(layout);
 
+    QLabel *leftLabel = new QLabel("FieldName");
+    QLabel *rightLabel = new QLabel("FieldWidth");
+    QGridLayout *fieldLayout = new QGridLayout();
+    QGridLayout *labelLayout = new QGridLayout();
+
+    labelLayout->addWidget(leftLabel, 0, 0);
+    labelLayout->addWidget(rightLabel, 0, 1);
+
     infoLayout = new QGridLayout();
-    infoLayout->addWidget(saveButton, 100, 0);
-    infoLayout->addWidget(cancButton, 100, 1);
+    infoLayout->addWidget(saveButton, 100, 1);
+
+    fieldLayout->addLayout(labelLayout, 0, 0);
+    fieldLayout->addLayout(infoLayout,  1, 0);
     QGroupBox *ibox = new QGroupBox("FieldInfo");
-    ibox->setLayout(infoLayout);
+    ibox->setLayout(fieldLayout);
 
     rightLayout->addWidget(gbox, 0, 0);
     rightLayout->addWidget(ibox, 1, 0);
@@ -110,16 +122,47 @@ void MainWindow::AddFieldInfoGroup()
 *****************************************************************************/
 void MainWindow::SaveFieldInfoProcess()
 {
-    int index = ifSelectBox->currentIndex();
-    interfaces[index].name = ifNameEdit->text().toStdString();
-    ifSelectBox->setItemText(index, ifNameEdit->text());
-    interfaces[index].fields.clear();
+    if (ifNameEdit->text().isEmpty()) {
+        QMessageBox::critical(this, "Error", "Interface name is empty!");
+        return;
+    }
+
+    if (fieldNumEdit->text().isEmpty() || fieldNumEdit->text().toInt() == 0) {
+        QMessageBox::critical(this, "Error", "Field number is empty!");
+        return;
+    }
+
+    string ss;
+
+    for (int i = 0; i < fieldNumEdit->text().toInt(); i++) {
+        if (fieldNameEdit[i]->text().isEmpty()) {
+            ss = "Field number " + to_string(i) + ": field name is empty!";
+            QMessageBox::critical(this, "Error", QString(ss.c_str()));
+            return;
+        }
+
+        if (fieldWidthEdit[i]->text().isEmpty() || fieldWidthEdit[i]->text().toInt() == 0) {
+            ss = "Field number " + to_string(i) + ": field width is zero!";
+            QMessageBox::critical(this, "Error", QString(ss.c_str()));
+            return;
+        }
+    }
+
+    if (interfaces.size() == currentIndex) {
+        InterfaceInfo interface;
+        interfaces.push_back(interface);
+        ifSelectBox->addItem("");
+    }
+
+    interfaces[currentIndex].name = ifNameEdit->text().toStdString();
+    ifSelectBox->setItemText(currentIndex, ifNameEdit->text());
+    interfaces[currentIndex].fields.clear();
 
     for (int i = 0; i < fieldNumEdit->text().toInt(); i++) {
         FieldInfo field;
         field.name = fieldNameEdit[i]->text().toStdString();
         field.width = fieldWidthEdit[i]->text().toInt();
-        interfaces[index].fields.push_back(field);
+        interfaces[currentIndex].fields.push_back(field);
     }
 }
 
@@ -164,16 +207,34 @@ void MainWindow::AddProjectInfoGroup(int row, int column)
     QLabel *prjNameLabel = new QLabel("ProjectName:");
     moduleNameEdit = new QLineEdit();
     QLabel *moduleNameLabel = new QLabel("ModuleName:");
+    QPushButton *destDirButton = new QPushButton("DestDir");
+    workdirEdit = new QLineEdit();
+    workdirEdit->setReadOnly(true);
+    workdirEdit->setText(QDir::currentPath());
 
     QGridLayout *layout = new QGridLayout();
     layout->addWidget(prjNameLabel, 0, 0);
     layout->addWidget(prjNameEdit,  0, 1);
     layout->addWidget(moduleNameLabel, 1, 0);
     layout->addWidget(moduleNameEdit,  1, 1);
+    layout->addWidget(destDirButton,   2, 0);
+    layout->addWidget(workdirEdit,     2, 1);
 
     QGroupBox *gbox = new QGroupBox("ProjectInfo");
     gbox->setLayout(layout);
     leftLayout->addWidget(gbox, row, column);
+    connect(destDirButton, SIGNAL(clicked()), this, SLOT(SelectWorkdir()));
+}
+
+/*****************************************************************************
+** Time        : TIME_CONTEXT                                               **
+** Author      : generator                                                  **
+** Description : Create                                                     **
+*****************************************************************************/
+void MainWindow::SelectWorkdir()
+{
+    QString ss = QFileDialog::getExistingDirectory(this, "", ".");
+    workdirEdit->setText(ss);
 }
 
 /*************************************************************
@@ -213,18 +274,14 @@ void MainWindow::AddInterfaceSelectionGroup(int row, int column)
 *****************************************************************************/
 void MainWindow::AddInterfaceProcess()
 {
-    size_t index = interfaces.size();
     InterfaceInfo interface;
-    interfaces.push_back(interface);
     
-    ifSelectBox->addItem("");
-    ifSelectBox->setCurrentIndex(index);
-
     for (size_t i = 0; i < fieldNameEdit.size(); i++) {
         fieldNameEdit[i]->clear();
         fieldWidthEdit[i]->clear();
     }
-    ShowInterfaceDetail();
+    currentIndex = interfaces.size();
+    ShowOneInterfaceInfo(interface);
 }
 
 /*************************************************************
@@ -265,9 +322,17 @@ void MainWindow::UpdateInterfaceLists()
 *************************************************************/
 void MainWindow::ShowInterfaceDetail()
 {
-    int index = ifSelectBox->currentIndex();
-    InterfaceInfo ifInfo = interfaces[index];
+    currentIndex = ifSelectBox->currentIndex();
+    ShowOneInterfaceInfo(interfaces[currentIndex]);
+}
 
+/*****************************************************************************
+** Time        : TIME_CONTEXT                                               **
+** Author      : generator                                                  **
+** Description : Create                                                     **
+*****************************************************************************/
+void MainWindow::ShowOneInterfaceInfo(InterfaceInfo &ifInfo)
+{
     ifNameEdit->setText(ifInfo.name.c_str());
     fieldNumEdit->setText(QString(to_string(ifInfo.fields.size()).c_str()));
 
@@ -291,7 +356,6 @@ void MainWindow::ShowInterfaceDetail()
 	fieldNameEdit[i]->setVisible(false);
 	fieldWidthEdit[i]->setVisible(false);
     }
-
 }
 
 /*************************************************************
@@ -551,7 +615,7 @@ void MainWindow::GenerateUtils()
 {
     string projName = prjNameEdit->text().toStdString();
     if (projName.size() == 0) {
-        cout << "Project Name if Empty!" << endl;
+        QMessageBox::critical(this, "Error", "Project Name is Empty!");
         return;
     }
 
@@ -813,7 +877,7 @@ void MainWindow::GenerateEnvironment()
     string moduleName = moduleNameEdit->text().toStdString();
 
     if (projName.size() == 0 || moduleName.size() == 0) {
-        cout << "Project Name or Module Name is Empty!" << endl;
+        QMessageBox::critical(this, "Error", "Project Name or Module Name is Empty!");
         return;
     }
 
