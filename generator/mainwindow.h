@@ -70,7 +70,7 @@ private:
     void AddInterfaceSelectionGroup(int, int);
 
 private slots:
-    void SelectWorkdir();
+    //void SelectWorkdir();
     void ShowInterfaceDetail();
     void GenerateUtils();
     void GenerateEnvironment();
