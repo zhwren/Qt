@@ -303,7 +303,11 @@ void MainWindow::UpdateInterfaceLists()
 	for (pt = it->second.begin(); pt != it->second.end(); pt++) {
 	    field.name = pt->first.data();
 	    field.width = atoi(pt->second.data().c_str());
-	    interface.fields.push_back(field);
+            if (field.name == "inst_num") {
+                interface.instNum = field.width;
+            } else {
+	        interface.fields.push_back(field);
+            }
 	}
         interfaces.push_back(interface);
     }
@@ -755,8 +759,7 @@ string GetEnvDecContext(vector<InterfaceInfo> &ifInfo)
     for (size_t i = 0; i < ifInfo.size(); i++) {
         ss << setw(4) << " " << "parameter " << setw(20) << std::left
            << ToUpper(ifInfo[i].name + "_NUM") << " = "
-           << ifInfo[i].fields[ifInfo[i].fields.size() - 1].width
-           << ";" << endl;
+           << ifInfo[i].instNum << ";" << endl;
     }
 
     return ss.str();

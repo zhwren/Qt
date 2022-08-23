@@ -44,9 +44,13 @@ typedef struct {
     int         width;
 } FieldInfo;
 
-typedef struct {
+typedef struct InterfaceInfoSt {
+    int instNum;
     std::string name;
     std::vector<FieldInfo> fields;
+    InterfaceInfoSt() {
+        instNum = 0;
+    }
 } InterfaceInfo;
 
 class InterfaceDialog : public QDialog
